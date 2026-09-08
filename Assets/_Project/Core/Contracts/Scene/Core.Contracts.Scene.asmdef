@@ -1,0 +1,14 @@
+{
+    "name": "Core.Contracts.Scene",
+    "rootNamespace": "Core.Contracts.Scene",
+    "references": [],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

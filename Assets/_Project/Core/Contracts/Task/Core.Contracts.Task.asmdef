@@ -1,0 +1,14 @@
+{
+    "name": "Core.Contracts.Task",
+    "rootNamespace": "Core.Contracts.Task",
+    "references": [],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

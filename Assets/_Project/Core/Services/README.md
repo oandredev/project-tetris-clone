@@ -1,0 +1,1 @@
+Always static files

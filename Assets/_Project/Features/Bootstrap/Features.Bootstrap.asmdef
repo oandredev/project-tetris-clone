@@ -1,0 +1,19 @@
+{
+    "name": "Features.Bootstrap",
+    "rootNamespace": "Features.Bootstrap",
+    "references": [
+        "GUID:f9d5cd0173737f846aa41770d0cc22e1",
+        "GUID:be60603690180114fa4246ef928c66b8",
+        "GUID:3f5cb01c306beca4ebe988ad9936b329",
+        "GUID:058fda1dabe29d7469a3900c55f84b06"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

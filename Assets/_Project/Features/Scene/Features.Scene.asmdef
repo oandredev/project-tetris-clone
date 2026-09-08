@@ -1,0 +1,17 @@
+{
+    "name": "Features.Scene",
+    "rootNamespace": "Features.Scene",
+    "references": [
+        "GUID:f9d5cd0173737f846aa41770d0cc22e1",
+        "GUID:be60603690180114fa4246ef928c66b8"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
