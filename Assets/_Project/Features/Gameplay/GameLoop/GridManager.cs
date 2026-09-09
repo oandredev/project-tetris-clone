@@ -214,5 +214,23 @@ namespace Features.Gameplay.Run
             }
             return true;
         }
+
+        public void Reset()
+        {
+            for (int y = 0; y < grid.Length; y++)
+            {
+                grid[y] = new Row();
+                for (int x = 0; x < grid[y].columns.Length; x++)
+                {
+                    cellColors[y, x] = default;
+                }
+            }
+
+            pieceNow = null;
+            currentPos = Vector2Int.zero;
+            currentRotationIndex = 0;
+
+            OnGridChanged?.Invoke();
+        }
     }
 }

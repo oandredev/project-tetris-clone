@@ -11,15 +11,18 @@ namespace Features.Gameplay.Run
         [SerializeField] private GridRenderer gridRendererRef;
         [SerializeField] private Piece.Piece[] availablePieces;
 
-        private float fallTimer;
-        private bool isRunning;
-        private bool isBusy;  // true during the clearing animation (pauses input/dropping)
+        [SerializeField] private GameObject ui;
+        [SerializeField] private float fallTimer;
+        [SerializeField] private bool isRunning;
+        [SerializeField] private bool isBusy;  // true during the clearing animation (pauses input/dropping)
+
 
         private void ResetRun()
         {
             speed = 1f;
             fallTimer = 0f;
             destroyedLines = 0;
+            gridManagerRef.Reset();
         }
 
         public void StartRun()
@@ -98,10 +101,11 @@ namespace Features.Gameplay.Run
         {
             Piece.Piece next = availablePieces[Random.Range(0, availablePieces.Length)];
 
-            if (!gridManagerRef.SpawnPiece(next))
+            if (!gridManagerRef.SpawnPiece(next)) // GameOver
             {
                 isRunning = false;
-                Debug.Log("Game Over");
+                gridManagerRef.LockPiece();
+                ui.SetActive(true);
             }
         }
     }
