@@ -12,19 +12,23 @@ namespace Features.Gameplay.GameLoop
             public int[] columns = new int[10];
         }
 
-        [SerializeField] private Row[] grid = new Row[24];
+        // --- Grid data ---
+        private Row[] grid = new Row[20];
+        private Color[,] cellColors;
 
+        // --- Active piece state ---
         private Piece.Piece pieceNow;
         private Vector2Int currentPos;
         private int currentRotationIndex; // 0=up, 1=right, 2=down, 3=left
-        private Color[,] cellColors;
+        private bool hasActivePiece;
 
+        // --- Events ---
         public event Action OnGridChanged;
 
-        private bool hasActivePiece;
+        // --- Public read-only properties ---
         public bool HasActivePiece => hasActivePiece;
 
-        //---------------------------------------------------------------------------
+        #region Unity Lifecycle
 
         private void Awake()
         {
@@ -35,7 +39,9 @@ namespace Features.Gameplay.GameLoop
             cellColors = new Color[grid.Length, grid[0].columns.Length];
         }
 
-        //---------------------------------------------------------------------------
+        #endregion
+
+        #region Spawn
 
         public bool SpawnPiece(Piece.Piece piece)
         {
@@ -58,45 +64,9 @@ namespace Features.Gameplay.GameLoop
             return true;
         }
 
-        public void HardDrop()
-        {
-            WritePiece(0);
+        #endregion
 
-            while (IsValidPosition(currentPos + new Vector2Int(0, 1), currentRotationIndex))
-                currentPos += new Vector2Int(0, 1);
-
-            WritePiece(2);
-            OnGridChanged?.Invoke();
-        }
-
-        //---------------------------------------------------------------------------
-
-        public Vector2Int GetGhostPosition()
-        {
-            Vector2Int ghostPos = currentPos;
-            while (IsValidPosition(ghostPos + new Vector2Int(0, 1), currentRotationIndex))
-                ghostPos += new Vector2Int(0, 1);
-            return ghostPos;
-        }
-
-
-        public int[,] GetGridSnapshot()
-        {
-            int rows = grid.Length;
-            int cols = grid[0].columns.Length;
-            int[,] snapshot = new int[rows, cols];
-
-            for (int y = 0; y < rows; y++)
-                for (int x = 0; x < cols; x++)
-                    snapshot[y, x] = grid[y].columns[x];
-
-            return snapshot;
-        }
-
-        public Color[,] GetColorSnapshot() => cellColors;
-
-        public int[,] GetCurrentShape() => pieceNow.GetRotation(pieceNow.GetRotationByIndex(currentRotationIndex));
-        public int GetCurrentSize() => pieceNow.GridSize;
+        #region Movement
 
         public void MoveDown() => TryMove(new Vector2Int(0, 1));
         public void MoveLeft() => TryMove(new Vector2Int(-1, 0));
@@ -120,7 +90,32 @@ namespace Features.Gameplay.GameLoop
             OnGridChanged?.Invoke();
         }
 
-        //---------------------------------------------------------------------------
+        public void HardDrop()
+        {
+            WritePiece(0);
+
+            while (IsValidPosition(currentPos + new Vector2Int(0, 1), currentRotationIndex))
+                currentPos += new Vector2Int(0, 1);
+
+            WritePiece(2);
+            OnGridChanged?.Invoke();
+        }
+
+        private void TryMove(Vector2Int delta)
+        {
+            WritePiece(0);
+
+            Vector2Int newPos = currentPos + delta;
+            if (IsValidPosition(newPos, currentRotationIndex))
+                currentPos = newPos;
+
+            WritePiece(2);
+            OnGridChanged?.Invoke();
+        }
+
+        #endregion
+
+        #region Locking & Line Clearing
 
         public void LockPiece()
         {
@@ -197,17 +192,43 @@ namespace Features.Gameplay.GameLoop
             OnGridChanged?.Invoke();
         }
 
-        private void TryMove(Vector2Int delta)
+        #endregion
+
+        #region Ghost / Preview
+
+        public Vector2Int GetGhostPosition()
         {
-            WritePiece(0);
-
-            Vector2Int newPos = currentPos + delta;
-            if (IsValidPosition(newPos, currentRotationIndex))
-                currentPos = newPos;
-
-            WritePiece(2);
-            OnGridChanged?.Invoke();
+            Vector2Int ghostPos = currentPos;
+            while (IsValidPosition(ghostPos + new Vector2Int(0, 1), currentRotationIndex))
+                ghostPos += new Vector2Int(0, 1);
+            return ghostPos;
         }
+
+        public int[,] GetCurrentShape() => pieceNow.GetRotation(pieceNow.GetRotationByIndex(currentRotationIndex));
+        public int GetCurrentSize() => pieceNow.GridSize;
+
+        #endregion
+
+        #region Snapshots
+
+        public int[,] GetGridSnapshot()
+        {
+            int rows = grid.Length;
+            int cols = grid[0].columns.Length;
+            int[,] snapshot = new int[rows, cols];
+
+            for (int y = 0; y < rows; y++)
+                for (int x = 0; x < cols; x++)
+                    snapshot[y, x] = grid[y].columns[x];
+
+            return snapshot;
+        }
+
+        public Color[,] GetColorSnapshot() => cellColors;
+
+        #endregion
+
+        #region Internal Helpers
 
         private void WritePiece(int value)
         {
@@ -253,7 +274,9 @@ namespace Features.Gameplay.GameLoop
             return true;
         }
 
-        //---------------------------------------------------------------------------
+        #endregion
+
+        #region Reset
 
         public void Reset()
         {
@@ -272,5 +295,7 @@ namespace Features.Gameplay.GameLoop
 
             OnGridChanged?.Invoke();
         }
+
+        #endregion
     }
 }

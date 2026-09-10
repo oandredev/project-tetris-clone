@@ -17,6 +17,8 @@ namespace Features.Data
         public static void SetBool(string key, bool value) => PlayerPrefs.SetInt(key, value ? 1 : 0);
         public static bool GetBool(string key, bool defaultValue = false) => PlayerPrefs.GetInt(key, defaultValue ? 1 : 0) == 1;
 
+        //---------------------------------------------------------------------------
+
         public static void SetObject<T>(string key, T value)
         {
             string json = JsonUtility.ToJson(value);
@@ -30,11 +32,15 @@ namespace Features.Data
             return JsonUtility.FromJson<T>(json);
         }
 
+        //---------------------------------------------------------------------------
+
         [System.Serializable]
         private class ListWrapper<T>
         {
             public List<T> items;
         }
+
+        //---------------------------------------------------------------------------
 
         public static void SetList<T>(string key, List<T> list)
         {
@@ -50,6 +56,8 @@ namespace Features.Data
             var wrapper = JsonUtility.FromJson<ListWrapper<T>>(json);
             return wrapper?.items ?? new List<T>();
         }
+
+        //---------------------------------------------------------------------------
 
         public static bool HasKey(string key) => PlayerPrefs.HasKey(key);
         public static void DeleteKey(string key) => PlayerPrefs.DeleteKey(key);

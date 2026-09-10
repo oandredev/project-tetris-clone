@@ -4,14 +4,19 @@ namespace Features.Gameplay.GameLoop
 {
     public class PiecePreviewRenderer : MonoBehaviour
     {
+        // --- References (Inspector) ---
         [SerializeField] private GameLoopController gameLoopRef;
         [SerializeField] private GameObject cubePrefab;
         [SerializeField] private float cellSize = 1f;
         [SerializeField] private int previewGridSize = 4;
 
+        // --- Runtime state (should not appear in the Inspector) ---
         private GameObject[] cubes;
         private MaterialPropertyBlock propertyBlock;
+
         private static readonly int BaseColor = Shader.PropertyToID("_BaseColor");
+
+        #region Unity Lifecycle
 
         private void Awake()
         {
@@ -26,12 +31,12 @@ namespace Features.Gameplay.GameLoop
             }
         }
 
-        //---------------------------------------------------------------------------
-
         private void OnEnable() => gameLoopRef.OnNextPieceChanged += Render;
         private void OnDisable() => gameLoopRef.OnNextPieceChanged -= Render;
 
-        //---------------------------------------------------------------------------
+        #endregion
+
+        #region Rendering
 
         private void Render(Piece.Piece piece)
         {
@@ -59,9 +64,15 @@ namespace Features.Gameplay.GameLoop
             }
         }
 
+        #endregion
+
+        #region Internal Helpers
+
         private Vector3 GridToLocalPos(float x, float y)
         {
             return new Vector3(x * cellSize, -y * cellSize, 0);
         }
+
+        #endregion
     }
 }

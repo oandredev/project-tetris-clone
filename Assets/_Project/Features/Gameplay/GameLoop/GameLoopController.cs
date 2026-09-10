@@ -8,37 +8,57 @@ namespace Features.Gameplay.GameLoop
     public class GameLoopController : MonoBehaviour
     {
         private const int PointsPerLine = 1000;
-        [SerializeField] private float speed = 1f;
-        [SerializeField] private int destroyedLines = 0;
-        [SerializeField] private int currentScore = 0;
 
+        // --- References (Inspector) ---
         [SerializeField] private GridManager gridManagerRef;
         [SerializeField] private GridRenderer gridRendererRef;
         [SerializeField] private Piece.Piece[] availablePieces;
-
         [SerializeField] private Animator anim;
+        [SerializeField] private float hardDropStepDelay = 0.02f;
+
+        // --- Runtime state (should not appear in the Inspector) ---
+        private float speed = 1f;
+        private int destroyedLines;
+        private int currentScore;
         private float fallTimer;
         private bool isRunning;
-        private bool isBusy;
+        private bool isBusy;          // true durante animação de limpeza de linha — bloqueia TUDO
+        private bool isHardDropping;  // true durante a queda rápida — só pausa o Tick automático
         private PieceBag pieceBag;
+        private static readonly int[] LineBonusMultiplier = { 0, 1, 3, 5, 8 };
 
+        // --- Events ---
         public event Action<int, int> OnGameOver;
         public event Action<Piece.Piece> OnNextPieceChanged;
 
+        // --- Public read-only properties ---
         public int CurrentScore => currentScore;
         public int CurrentLine => destroyedLines;
 
-        //---------------------------------------------------------------------------
+        #region Unity Lifecycle
 
-        private void ResetRun()
+        private void Update()
         {
-            speed = 1f;
-            fallTimer = 0f;
-            destroyedLines = 0;
-            currentScore = 0;
-            gridManagerRef.Reset();
-            pieceBag = new PieceBag(availablePieces);
+            if (!isRunning || isBusy) return;
+
+            if (!isHardDropping)
+            {
+                fallTimer += Time.deltaTime;
+                float interval = 1f / speed;
+
+                if (fallTimer >= interval)
+                {
+                    fallTimer -= interval;
+                    Tick();
+                }
+            }
+
+            HandleInput();
         }
+
+        #endregion
+
+        #region Run Control
 
         public void StartRun()
         {
@@ -49,23 +69,20 @@ namespace Features.Gameplay.GameLoop
             SpawnPiece();
         }
 
-        //---------------------------------------------------------------------------
-
-        private void Update()
+        private void ResetRun()
         {
-            if (!isRunning || isBusy) return;
-
-            fallTimer += Time.deltaTime;
-            float interval = 1f / speed;
-
-            if (fallTimer >= interval)
-            {
-                fallTimer -= interval;
-                Tick();
-            }
-
-            HandleInput();
+            speed = 1f;
+            fallTimer = 0f;
+            destroyedLines = 0;
+            currentScore = 0;
+            isHardDropping = false;
+            gridManagerRef.Reset();
+            pieceBag = new PieceBag(availablePieces);
         }
+
+        #endregion
+
+        #region Fall Loop
 
         private void Tick()
         {
@@ -77,8 +94,6 @@ namespace Features.Gameplay.GameLoop
 
             LockAndAdvance();
         }
-
-        //---------------------------------------------------------------------------
 
         private void LockAndAdvance()
         {
@@ -108,11 +123,14 @@ namespace Features.Gameplay.GameLoop
             SpawnPiece();
         }
 
-
         private void UpdateDelay()
         {
             speed = 1 + (destroyedLines / 5);
         }
+
+        #endregion
+
+        #region Input
 
         private void HandleInput()
         {
@@ -123,13 +141,28 @@ namespace Features.Gameplay.GameLoop
             if (Input.GetKeyDown(KeyCode.Q)) gridManagerRef.Rotate(-1);
             if (Input.GetKeyDown(KeyCode.E)) gridManagerRef.Rotate(1);
 
-            if (Input.GetKeyDown(KeyCode.Space))
-            {
-                fallTimer = 0f;
-                gridManagerRef.HardDrop();
-                LockAndAdvance();
-            }
+            if (Input.GetKeyDown(KeyCode.Space) && !isHardDropping)
+                StartCoroutine(HardDropRoutine());
         }
+
+        private IEnumerator HardDropRoutine()
+        {
+            isHardDropping = true;
+            fallTimer = 0f;
+
+            while (gridManagerRef.CanMoveDown())
+            {
+                gridManagerRef.MoveDown();
+                yield return new WaitForSeconds(hardDropStepDelay);
+            }
+
+            isHardDropping = false;
+            LockAndAdvance();
+        }
+
+        #endregion
+
+        #region Pieces
 
         private void SpawnPiece()
         {
@@ -137,24 +170,43 @@ namespace Features.Gameplay.GameLoop
 
             if (!gridManagerRef.SpawnPiece(current)) // GameOver
             {
-                anim.SetInteger("Screen", 0);
-
                 isRunning = false;
-                ScoreService.SaveRun(currentScore, destroyedLines);
-                OnGameOver?.Invoke(currentScore, destroyedLines);
-                ResetRun();
+                StartCoroutine(HandleGameOver());
                 return;
             }
 
             OnNextPieceChanged?.Invoke(pieceBag.Peek());
         }
 
-        //---------------------------------------------------------------------------
+        private IEnumerator HandleGameOver()
+        {
+            yield return StartCoroutine(gridRendererRef.PlayGameOverAnimation());
+
+            anim.SetInteger("Screen", 0);
+            ScoreService.SaveRun(currentScore, destroyedLines);
+            OnGameOver?.Invoke(currentScore, destroyedLines);
+            ResetRun();
+        }
+
+        #endregion
+
+        #region Score
 
         private void AddScore(int linesCleared)
         {
-            int points = Mathf.RoundToInt(linesCleared * PointsPerLine * speed);
+            int multiplier = GetLineBonusMultiplier(linesCleared);
+            int points = Mathf.RoundToInt(multiplier * PointsPerLine * speed);
             currentScore += points;
         }
+
+        private int GetLineBonusMultiplier(int linesCleared)
+        {
+            if (linesCleared >= 1 && linesCleared < LineBonusMultiplier.Length)
+                return LineBonusMultiplier[linesCleared];
+
+            return linesCleared;
+        }
+
+        #endregion
     }
 }

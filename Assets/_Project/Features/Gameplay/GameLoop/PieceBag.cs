@@ -5,13 +5,20 @@ namespace Features.Gameplay.GameLoop
 {
     public class PieceBag
     {
+        // --- Bag state ---
         private readonly Piece.Piece[] allPieces;
         private List<Piece.Piece> currentBag = new List<Piece.Piece>();
+
+        #region Constructor
 
         public PieceBag(Piece.Piece[] pieces)
         {
             allPieces = pieces;
         }
+
+        #endregion
+
+        #region Public API
 
         public Piece.Piece Next()
         {
@@ -26,6 +33,10 @@ namespace Features.Gameplay.GameLoop
             EnsureBagFilled();
             return currentBag[0];
         }
+
+        #endregion
+
+        #region Internal Helpers
 
         private void EnsureBagFilled()
         {
@@ -43,5 +54,7 @@ namespace Features.Gameplay.GameLoop
                 (list[i], list[j]) = (list[j], list[i]);
             }
         }
+
+        #endregion
     }
 }

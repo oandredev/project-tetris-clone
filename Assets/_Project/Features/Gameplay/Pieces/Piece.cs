@@ -30,53 +30,10 @@ namespace Features.Gameplay.Piece
         [SerializeField] private int gridSize = 3;
         [SerializeField] private Color _pieceColor = Color.blue;
 
-        [SerializeField]
-        private RotationState up = new RotationState
-        {
-            rows = new PieceRow[]
-            {
-                new PieceRow(0, 0, 1, 0),
-                new PieceRow(1, 1, 1, 0),
-                new PieceRow(0, 0, 0, 0),
-                new PieceRow(0, 0, 0, 0)
-            }
-        };
-
-        [SerializeField]
-        private RotationState right = new RotationState
-        {
-            rows = new PieceRow[]
-            {
-                new PieceRow(0, 1, 0, 0),
-                new PieceRow(0, 1, 0, 0),
-                new PieceRow(0, 1, 1, 0),
-                new PieceRow(0, 0, 0, 0)
-            }
-        };
-
-        [SerializeField]
-        private RotationState down = new RotationState
-        {
-            rows = new PieceRow[]
-            {
-                new PieceRow(0, 0, 0, 0),
-                new PieceRow(1, 1, 1, 0),
-                new PieceRow(1, 0, 0, 0),
-                new PieceRow(0, 0, 0, 0)
-            }
-        };
-
-        [SerializeField]
-        private RotationState left = new RotationState
-        {
-            rows = new PieceRow[]
-            {
-                new PieceRow(1, 1, 0, 0),
-                new PieceRow(0, 1, 0, 0),
-                new PieceRow(0, 1, 0, 0),
-                new PieceRow(0, 0, 0, 0)
-            }
-        };
+        [SerializeField] private RotationState up = new RotationState();
+        [SerializeField] private RotationState right = new RotationState();
+        [SerializeField] private RotationState down = new RotationState();
+        [SerializeField] private RotationState left = new RotationState();
 
         //---------------------------------------------------------------------------
 

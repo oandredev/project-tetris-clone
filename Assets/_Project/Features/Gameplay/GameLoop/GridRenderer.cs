@@ -5,24 +5,25 @@ namespace Features.Gameplay.GameLoop
 {
     public class GridRenderer : MonoBehaviour
     {
+        // --- References (Inspector) ---
         [SerializeField] private GridManager gridManager;
         [SerializeField] private GameObject cubePrefab;
         [SerializeField] private float cellSize = 1f;
         [SerializeField] private float clearStepDelay = 0.05f;
+        [SerializeField] private Color ghostColor = Color.white;
+        [SerializeField] private float gameOverRowDelay = 0.05f;
 
+        // --- Runtime state (should not appear in the Inspector) ---
         private GameObject[,] cubes;
         private Renderer[,] renderers;
+        private GameObject[] ghostCubes;
         private MaterialPropertyBlock propertyBlock;
-
         private int rows;
         private int cols;
 
         private static readonly int BaseColor = Shader.PropertyToID("_BaseColor");
 
-        [SerializeField] private Color ghostColor = Color.white;
-        private GameObject[] ghostCubes;
-
-        //---------------------------------------------------------------------------
+        #region Unity Lifecycle
 
         private void Awake()
         {
@@ -56,12 +57,12 @@ namespace Features.Gameplay.GameLoop
             }
         }
 
-        //---------------------------------------------------------------------------
-
         private void OnEnable() => gridManager.OnGridChanged += Render;
         private void OnDisable() => gridManager.OnGridChanged -= Render;
 
-        //---------------------------------------------------------------------------
+        #endregion
+
+        #region Rendering
 
         private void Render()
         {
@@ -123,6 +124,10 @@ namespace Features.Gameplay.GameLoop
             }
         }
 
+        #endregion
+
+        #region Line Clear Animation
+
         public IEnumerator PlayLineClearAnimation(int[] rowsToClear)
         {
             for (int x = 0; x < cols; x++)
@@ -135,9 +140,27 @@ namespace Features.Gameplay.GameLoop
             }
         }
 
+
+        public IEnumerator PlayGameOverAnimation()
+        {
+            for (int y = rows - 1; y >= 0; y--) // y = rows-1 é o fundo visual, y = 0 é o topo
+            {
+                for (int x = 0; x < cols; x++)
+                    cubes[y, x].SetActive(false);
+
+                yield return new WaitForSeconds(gameOverRowDelay);
+            }
+        }
+
+        #endregion
+
+        #region Internal Helpers
+
         private Vector3 GridToWorldPos(int x, int y)
         {
             return new Vector3(x * cellSize, (rows - 1 - y) * cellSize, 0);
         }
+
+        #endregion
     }
 }

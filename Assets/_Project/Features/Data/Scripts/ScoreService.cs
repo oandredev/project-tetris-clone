@@ -7,10 +7,14 @@ namespace Features.Data
         private const string TotalScoreKey = "tetris_totalscore";
         private const string TotalLinesKey = "tetris_totallines";
 
+        //---------------------------------------------------------------------------
+
         public static int GetHighScore() => PrefsService.GetInt(HighScoreKey, 0);
         public static int GetHighLines() => PrefsService.GetInt(HighLinesKey, 0);
         public static int GetTotalScore() => PrefsService.GetInt(TotalScoreKey, 0);
         public static int GetTotalLines() => PrefsService.GetInt(TotalLinesKey, 0);
+
+        //---------------------------------------------------------------------------
 
         public static void SaveRun(int score, int lines)
         {

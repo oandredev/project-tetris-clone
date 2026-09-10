@@ -7,6 +7,7 @@ namespace Features.UI
 {
     public class GameOverUI : MonoBehaviour
     {
+        // --- References (Inspector) ---
         [SerializeField] private GameLoopController gameLoopRef;
 
         [SerializeField] private TMP_Text recordScoreText;
@@ -14,12 +15,14 @@ namespace Features.UI
         [SerializeField] private TMP_Text totalScoreText;
         [SerializeField] private TMP_Text totalLinesText;
 
-        //---------------------------------------------------------------------------
+        #region Unity Lifecycle
 
         private void OnEnable() => gameLoopRef.OnGameOver += HandleGameOver;
         private void OnDisable() => gameLoopRef.OnGameOver -= HandleGameOver;
 
-        //---------------------------------------------------------------------------
+        #endregion
+
+        #region Game Over Handling
 
         private void HandleGameOver(int score, int lines)
         {
@@ -29,5 +32,6 @@ namespace Features.UI
             totalScoreText.text = $"POINTS: \n {ScoreService.GetTotalScore()}";
             totalLinesText.text = $"LINES: \n {ScoreService.GetTotalLines()}";
         }
+        #endregion
     }
 }
