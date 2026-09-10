@@ -13,7 +13,7 @@ namespace Features.Gameplay.GameLoop
         }
 
         // --- Grid data ---
-        private Row[] grid = new Row[20];
+        private Row[] grid = CreateEmptyGrid();
         private Color[,] cellColors;
 
         // --- Active piece state ---
@@ -28,14 +28,18 @@ namespace Features.Gameplay.GameLoop
         // --- Public read-only properties ---
         public bool HasActivePiece => hasActivePiece;
 
+        private static Row[] CreateEmptyGrid()
+        {
+            Row[] result = new Row[20];
+            for (int i = 0; i < result.Length; i++)
+                result[i] = new Row();
+            return result;
+        }
+
         #region Unity Lifecycle
 
         private void Awake()
         {
-            for (int i = 0; i < grid.Length; i++)
-                if (grid[i] == null)
-                    grid[i] = new Row();
-
             cellColors = new Color[grid.Length, grid[0].columns.Length];
         }
 

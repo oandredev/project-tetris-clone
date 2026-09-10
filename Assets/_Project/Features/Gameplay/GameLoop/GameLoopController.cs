@@ -35,6 +35,11 @@ namespace Features.Gameplay.GameLoop
         public int CurrentScore => currentScore;
         public int CurrentLine => destroyedLines;
 
+        private void Start()
+        {
+            OnGameOver?.Invoke(0, 0);
+        }
+
         #region Unity Lifecycle
 
         private void Update()
