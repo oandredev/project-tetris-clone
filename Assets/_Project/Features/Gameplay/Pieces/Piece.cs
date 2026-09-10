@@ -27,7 +27,6 @@ namespace Features.Gameplay.Piece
     [CreateAssetMenu(fileName = "Piece", menuName = "Scriptable Objects/Piece")]
     public class Piece : ScriptableObject
     {
-        [SerializeField] private string _pieceName = "L";
         [SerializeField] private int gridSize = 3;
         [SerializeField] private Color _pieceColor = Color.blue;
 
@@ -78,6 +77,8 @@ namespace Features.Gameplay.Piece
                 new PieceRow(0, 0, 0, 0)
             }
         };
+
+        //---------------------------------------------------------------------------
 
         public int GridSize => gridSize;
 

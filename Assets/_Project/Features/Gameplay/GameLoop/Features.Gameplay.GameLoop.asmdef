@@ -1,0 +1,17 @@
+{
+    "name": "Features.Gameplay.GameLoop",
+    "rootNamespace": "",
+    "references": [
+        "GUID:1f9d3887c05acdf4cae4ce00ab12cc31",
+        "GUID:75ffc9e3715c37d42b9caff68bb28218"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
