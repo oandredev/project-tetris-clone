@@ -22,14 +22,20 @@ namespace Features.Gameplay.GameLoop
         private int currentScore;
         private float fallTimer;
         private bool isRunning;
-        private bool isBusy;          // true durante animação de limpeza de linha — bloqueia TUDO
-        private bool isHardDropping;  // true durante a queda rápida — só pausa o Tick automático
+        private bool isBusy;
+        private bool isHardDropping;
         private PieceBag pieceBag;
         private static readonly int[] LineBonusMultiplier = { 0, 1, 3, 5, 8 };
 
         // --- Events ---
         public event Action<int, int> OnGameOver;
+        public event Action OnGameOverEffectStarted;
         public event Action<Piece.Piece> OnNextPieceChanged;
+        public event Action<int> OnLinesCleared;
+        public event Action OnHardDropStart;
+        public event Action OnPiecePut;
+
+        public float CurrentSpeed => speed;
 
         // --- Public read-only properties ---
         public int CurrentScore => currentScore;
@@ -104,6 +110,8 @@ namespace Features.Gameplay.GameLoop
         {
             gridManagerRef.LockPiece();
 
+            OnPiecePut?.Invoke();
+
             int[] completedLines = gridManagerRef.FindCompletedLines();
 
             if (completedLines.Length > 0)
@@ -116,6 +124,8 @@ namespace Features.Gameplay.GameLoop
         {
             isBusy = true;
 
+            OnLinesCleared?.Invoke(rows.Length);
+
             yield return StartCoroutine(gridRendererRef.PlayLineClearAnimation(rows));
 
             gridManagerRef.ClearLines(rows);
@@ -123,6 +133,7 @@ namespace Features.Gameplay.GameLoop
             AddScore(rows.Length);
             destroyedLines += rows.Length;
             UpdateDelay();
+
 
             isBusy = false;
             SpawnPiece();
@@ -154,6 +165,7 @@ namespace Features.Gameplay.GameLoop
         {
             isHardDropping = true;
             fallTimer = 0f;
+            OnHardDropStart?.Invoke(); // NOVO
 
             while (gridManagerRef.CanMoveDown())
             {
@@ -185,6 +197,8 @@ namespace Features.Gameplay.GameLoop
 
         private IEnumerator HandleGameOver()
         {
+            OnGameOverEffectStarted?.Invoke();
+
             yield return StartCoroutine(gridRendererRef.PlayGameOverAnimation());
 
             anim.SetInteger("Screen", 0);

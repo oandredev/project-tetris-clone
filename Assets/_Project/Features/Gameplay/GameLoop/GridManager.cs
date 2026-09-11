@@ -24,6 +24,9 @@ namespace Features.Gameplay.GameLoop
 
         // --- Events ---
         public event Action OnGridChanged;
+        public event Action OnMove;
+        public event Action OnMoveFailed;
+        public event Action OnGameOverAnimationStarted;
 
         // --- Public read-only properties ---
         public bool HasActivePiece => hasActivePiece;
@@ -88,7 +91,15 @@ namespace Features.Gameplay.GameLoop
             WritePiece(0);
 
             if (IsValidPosition(currentPos, newRotationIndex))
+            {
                 currentRotationIndex = newRotationIndex;
+                OnMove?.Invoke();
+            }
+            else
+            {
+                OnMoveFailed?.Invoke();
+
+            }
 
             WritePiece(2);
             OnGridChanged?.Invoke();
@@ -111,7 +122,14 @@ namespace Features.Gameplay.GameLoop
 
             Vector2Int newPos = currentPos + delta;
             if (IsValidPosition(newPos, currentRotationIndex))
+            {
                 currentPos = newPos;
+                OnMove?.Invoke();
+            }
+            else
+            {
+                OnMoveFailed?.Invoke();
+            }
 
             WritePiece(2);
             OnGridChanged?.Invoke();
