@@ -73,15 +73,15 @@ ScoreService / PrefsService → generic PlayerPrefs persistence (high score, lif
 ---
 
 ## ▶️ Getting Started
-
+ 
 1. Clone the repository:
-   ```bash
+```bash
    git clone https://github.com/oandredev/project-tetris-clone
-   ```
-2. Open the project with the Unity version specified in `ProjectSettings/ProjectVersion.txt`.
+```
+2. Open the project with **Unity 6000.6.0f1**.
 3. Open the main scene and hit Play.
+Alternatively, skip building from source and download the ready-to-play build directly from the [Releases](https://github.com/oandredev/project-tetris-clone/releases) page.
 
----
 
 ## 📌 Status
 

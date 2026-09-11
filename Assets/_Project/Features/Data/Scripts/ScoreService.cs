@@ -2,32 +2,27 @@ namespace Features.Data
 {
     public static class ScoreService
     {
-        private const string HighScoreKey = "tetris_highscore";
-        private const string HighLinesKey = "tetris_highlines";
-        private const string TotalScoreKey = "tetris_totalscore";
-        private const string TotalLinesKey = "tetris_totallines";
+        private static SaveData cachedData;
 
-        //---------------------------------------------------------------------------
+        private static SaveData Data => cachedData ??= SaveSystem.Load();
 
-        public static int GetHighScore() => PrefsService.GetInt(HighScoreKey, 0);
-        public static int GetHighLines() => PrefsService.GetInt(HighLinesKey, 0);
-        public static int GetTotalScore() => PrefsService.GetInt(TotalScoreKey, 0);
-        public static int GetTotalLines() => PrefsService.GetInt(TotalLinesKey, 0);
-
-        //---------------------------------------------------------------------------
+        public static int GetHighScore() => Data.highScore;
+        public static int GetHighLines() => Data.highLines;
+        public static int GetTotalScore() => Data.totalScore;
+        public static int GetTotalLines() => Data.totalLines;
 
         public static void SaveRun(int score, int lines)
         {
-            if (score > GetHighScore())
-                PrefsService.SetInt(HighScoreKey, score);
+            if (score > Data.highScore)
+                Data.highScore = score;
 
-            if (lines > GetHighLines())
-                PrefsService.SetInt(HighLinesKey, lines);
+            if (lines > Data.highLines)
+                Data.highLines = lines;
 
-            PrefsService.SetInt(TotalScoreKey, GetTotalScore() + score);
-            PrefsService.SetInt(TotalLinesKey, GetTotalLines() + lines);
+            Data.totalScore += score;
+            Data.totalLines += lines;
 
-            PrefsService.Save();
+            SaveSystem.Save(Data);
         }
     }
 }
