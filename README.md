@@ -19,6 +19,8 @@ Personal study and portfolio project.
 | `E` | Rotate clockwise |
 | `Space` | **Hard drop** — animated fast fall to the bottom; the piece can still be moved and rotated while falling |
 
+> Controls use a simple legacy keyboard layout (fixed key bindings, no rebinding or input configuration) — a deliberate scope decision for this project, which was not meant to include a full input-management system.
+
 ---
 
 ## 📐 Rules
@@ -39,8 +41,8 @@ Personal study and portfolio project.
   | 4 (Tetris) | 8x |
 
 - Fall speed increases every 5 lines cleared.
-- **High score and progress saved between runs** (via `PlayerPrefs`): best score, best number of lines in a single run, and lifetime totals across every run ever played.
-- On game over, the entire board disappears in a bottom-to-top animation before the results screen appears.
+- **High score and progress saved between runs**: best score, best number of lines in a single run, and lifetime totals across every run ever played.
+- On game over, the entire board disappears in a bottom-to-top animation
 
 ---
 
@@ -65,24 +67,27 @@ ScoreService / PrefsService → generic PlayerPrefs persistence (high score, lif
 
 ## 🛠️ Tech Stack
 
-- Unity (C#)
-- `MaterialPropertyBlock` for coloring without generating duplicate materials
-- `ScriptableObject` for piece data definitions
-- `PlayerPrefs` + `JsonUtility` for local persistence
+* **Unity (C#)**
+* **`MaterialPropertyBlock`** for applying colors without creating duplicate materials.
+* **`ScriptableObject`** for piece data definitions. New pieces can be created directly from the Unity Editor via **Right Click → Create → ScriptableObject → Piece**. After creating a piece, configure its color and cube positions, then add it to the **Available Pieces** list in `GameLoopController`.
+* **`PlayerPrefs` + `JsonUtility`** for local data persistence.
 
 ---
 
 ## ▶️ Getting Started
- 
+
 1. Clone the repository:
-```bash
+   ```bash
    git clone https://github.com/oandredev/project-tetris-clone
-```
+   ```
 2. Open the project with **Unity 6000.6.0f1**.
 3. Open the main scene and hit Play.
+
 Alternatively, skip building from source and download the ready-to-play build directly from the [Releases](https://github.com/oandredev/project-tetris-clone/releases) page.
 
+---
 
 ## 📌 Status
 
-Completed, part of my game development study portfolio.
+Completed, part of my game development study portfolio. The main goal of this project was to practice game development knowledge, with the final stage of development focused specifically on core game mechanics and underlying logic.
+EOF
