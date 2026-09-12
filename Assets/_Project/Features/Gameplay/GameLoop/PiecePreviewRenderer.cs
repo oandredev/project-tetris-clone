@@ -31,8 +31,17 @@ namespace Features.Gameplay.GameLoop
             }
         }
 
-        private void OnEnable() => gameLoopRef.OnNextPieceChanged += Render;
-        private void OnDisable() => gameLoopRef.OnNextPieceChanged -= Render;
+        private void OnEnable()
+        {
+            gameLoopRef.OnNextPieceChanged += Render;
+            gameLoopRef.OnGameOver += HandleGameOver;
+        }
+
+        private void OnDisable()
+        {
+            gameLoopRef.OnNextPieceChanged -= Render;
+            gameLoopRef.OnGameOver -= HandleGameOver;
+        }
 
         #endregion
 
@@ -40,6 +49,8 @@ namespace Features.Gameplay.GameLoop
 
         private void Render(Piece.Piece piece)
         {
+            Clear();
+
             int[,] shape = piece.GetRotation(piece.GetRotationByIndex(0));
             int size = piece.GridSize;
             Color color = piece.GetPieceColor();
@@ -62,6 +73,17 @@ namespace Features.Gameplay.GameLoop
                     cube.GetComponent<Renderer>().SetPropertyBlock(propertyBlock);
                 }
             }
+        }
+
+        private void HandleGameOver(int score, int lines)
+        {
+            Clear();
+        }
+
+        private void Clear()
+        {
+            foreach (var cube in cubes)
+                cube.SetActive(false);
         }
 
         #endregion

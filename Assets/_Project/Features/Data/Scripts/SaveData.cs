@@ -7,5 +7,6 @@ namespace Features.Data
         public int highLines;
         public int totalScore;
         public int totalLines;
+        public bool audioEnabled = true;
     }
 }

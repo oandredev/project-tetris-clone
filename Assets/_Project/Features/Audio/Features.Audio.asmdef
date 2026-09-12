@@ -1,0 +1,17 @@
+{
+    "name": "Features.Audio",
+    "rootNamespace": "",
+    "references": [
+        "GUID:75ffc9e3715c37d42b9caff68bb28218",
+        "GUID:78e3a304b6c979b468be26fdc774af74"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

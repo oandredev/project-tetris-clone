@@ -1,5 +1,6 @@
 using UnityEngine;
 using Features.Gameplay.GameLoop;
+using Features.Data;
 
 namespace Features.Audio
 {
@@ -30,6 +31,8 @@ namespace Features.Audio
 
         private void OnEnable()
         {
+            AudioListener.volume = SettingsService.GetAudioEnabled() ? 1f : 0f;
+
             gameLoopRef.OnLinesCleared += HandleLinesCleared;
             gameLoopRef.OnHardDropStart += HandleHardDropStart;
             gameLoopRef.OnGameOverEffectStarted += HandleGameOver;

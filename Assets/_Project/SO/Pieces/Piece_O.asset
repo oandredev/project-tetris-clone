@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7da0714a72c6c314e82c445dc1e6ce28, type: 3}
-  m_Name: Piece_Cube
+  m_Name: Piece_O
   m_EditorClassIdentifier: Features.Gameplay.Piece::Features.Gameplay.Piece.Piece
   _pieceName: T
   gridSize: 3
